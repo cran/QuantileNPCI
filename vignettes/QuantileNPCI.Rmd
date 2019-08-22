@@ -1,0 +1,107 @@
+---
+title: "QuantileNPCI"
+author: "Nicholas Hutson"
+date: "8/20/2019"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{QuantileNPCI}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: Hutson
+  title: Calculating nonparametric confidence intervals for quantiles using fractional order statistics
+  author:
+  - family: Hutson
+    given: Alan D.
+  container-title: Journal of Applied Statistics
+  volume: 26
+  URL: 'http://dx.doi.org/10.1080/02664769922458'
+  DOI: 10.1080/02664769922458
+  issue: 3
+  page: 343-353
+  type: article-journal
+  issued:
+    year: 1999
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, message=FALSE}
+library(QuantileNPCI)
+library(dplyr)
+library(kableExtra)
+```
+
+## quantCI()
+
+This function can calculate nonparametric confidence intervals for quantiles using fractional order statistics, based on [@Hutson].  
+
+We use the flood data presented in Hutson 1999 as an example. The data were saved in the dataset `flood` in this package.
+
+```{r}
+##The consecutive annual flood discharge rates of the Feather River at Oroville, CA
+data1 <- flood[flood$loc=="Feather", "discharge"]
+
+##The consecutive annual discharge rates of  the Blackstone River at Woonsocket, RI
+data2 <- flood[flood$loc=="Blackstone", "discharge"]
+```
+
+Exact method
+```{r}
+quant <- .5
+alpha <- .05
+q1 <- quantCI(data1,quant,alpha, method = "exact")
+q1
+q2 <- quantCI(data2,quant,alpha, method = "exact")
+q2
+```
+
+Reproduce Table 8: The 95% confidence intervals for the median flood rates)
+```{r}
+df <- cbind(as.data.frame(table(flood$loc)), 
+            rbind(unlist(q1),unlist(q2))) %>% 
+  dplyr::rename(River=1, n=2, u1=3, u2=4, lower=5, middle=6, upper=7)
+
+df %>% 
+  dplyr::mutate(u1=round(u1,5), u2=round(u2,5)) %>% 
+  dplyr::mutate(CI=paste("(", round(lower,2), ", ", round(upper,2), ")", sep = "")) %>% 
+  dplyr::select(River:u2, CI) %>% 
+  knitr::kable(align=rep('c', 5)) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),full_width = F, position = "center",font_size = 10)
+```
+
+Approximate Method
+
+```{r}
+quantCI(data1,quant,alpha, method = "approximate")
+quantCI(data2,quant,alpha, method = "approximate")
+```
+
+## Method summary  
+
+### quantCI
+
+For the quantCI function, there are two methods that can be specified to calculate the confidence interval specified. The "exact" method solves for the percentiles numerically, while the "approximate" method uses an approximation that may be faster with large sets of data.
+
+If the "approximate" method is specified, let $n$ be the number of non-missing values for a variable, and let $x_{1},x_{2},...,x_{n}$ represent the ordered values of the variable. Let the $t^{th}$ percentile be $y$, $p = \frac{t}{100}$, and let $(n+1)p = j + g$, where $j$ is the integer part of $n(p+1)$, and $g$ is the fractional part of $n(p+1)$. Then:  
+  
+$$y = (1-g)x_{j} + gx_{j+1}$$  
+
+If the "exact" method is specified, let $u_{1}$ be the lower percentile, $u_{2}$ be the upper percentile, $0 < u_{1} < u_{2} < 1$, and $n^{'} = n + 1$. $I_{u}(a,b)$ is the incomplete beta function. Then:
+
+$$I_{u}[n^{'}u_{1},n^{'}(1-u_{1})] = 1 - \alpha/2$$
+
+$$I_{u}[n^{'}u_{2},n^{'}(1-u_{2})] = \alpha/2$$
+
+$$y = (1-g)x_{j} + gx_{j+1}$$
+
+The function returns a list of 5 values:  the lower/upper confidence limit of the quantile, the estimated data value at the quantile and its lower/upper bound of the confidence interval. 
+
+# References
+
+SAS Institute (2013) <https://support.sas.com/documentation/cdl/en/procstat/66703/HTML/default/viewer.htm#procstat_univariate_details13.htm> The UNIVARIATE Procedure, Base SAS(R) 9.4 Procedures Guide: Statistical Procedures, Second Edition.
