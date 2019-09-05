@@ -1,9 +1,10 @@
 Package: QuantileNPCI
 Type: Package
 Title: Nonparametric Confidence Intervals for Quantiles
-Version: 0.2.95
+Version: 0.9.0
 Authors@R: c(
     person("Nicholas", "Hutson", role =  "aut"),
+    person("Alan", "Hutson", role =  "aut", email = "alan.hutson@roswellpark.org"),
     person("Li", "Yan", role=c("aut", "cre"), email = "li.yan@roswellpark.org")
   )
 Maintainer: Li Yan <li.yan@roswellpark.org>
@@ -17,8 +18,9 @@ Depends: R (>= 2.10)
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-08-20 19:30:03 UTC; liyan
+Packaged: 2019-09-05 15:04:30 UTC; liyan
 Author: Nicholas Hutson [aut],
+  Alan Hutson [aut],
   Li Yan [aut, cre]
 Repository: CRAN
-Date/Publication: 2019-08-22 07:20:02 UTC
+Date/Publication: 2019-09-05 15:20:02 UTC

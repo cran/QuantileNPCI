@@ -3,7 +3,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of QuantileNPCI is to calculate nonparametric confidence intervals for quantiles using fractional order statistics.
+The goal of QuantileNPCI is to calculate non-parametric confidence intervals for quantiles using fractional order statistics.
 
 ## Installation
 
@@ -15,7 +15,7 @@ install.packages("QuantileNPCI")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to calculate non-parametric confidence intervals for median, for the flood discharge data in Feather River with data included in the package:
 
 ``` r
 library(QuantileNPCI)

@@ -1,4 +1,4 @@
-# QuantileNPCI 0.2.95
+# QuantileNPCI 0.9.0
 
 * release candidate
 
